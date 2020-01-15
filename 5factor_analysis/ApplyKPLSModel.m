@@ -1,0 +1,13 @@
+function Model = ApplyKPLSModel(Xtrain,Xtest,Model)
+type        =    Model.type;
+pars        =    Model.Sigma_KPLS;
+Ktest       =    kernel_matrix(Xtest,type,pars,Xtrain);
+K           =    kernel_matrix(Xtrain,type,pars);
+nxpca       =    size(Xtrain,1);
+nxtest      =    size(Xtest,1);
+onepca      =    ones(nxpca,nxpca)/nxpca;
+onetest     =    ones(nxtest,nxpca)/nxpca;
+Gtest       =    Ktest - onetest * K - Ktest * onepca + onetest * K * onepca;
+B           =    Model.B;
+Ypred       =    Gtest*B;
+Model.xpred =    Ypred;
